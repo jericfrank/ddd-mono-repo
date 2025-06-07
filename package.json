@@ -1,0 +1,19 @@
+{
+  "name": "ddd-mono-repo",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "private": true,
+  "workspaces": [
+    "packages/core",
+    "packages/api"
+  ],
+  "dependencies": {
+    "pg": "^8.16.0"
+  }
+}

@@ -1,0 +1,53 @@
+version: "3.9"
+services:
+  db-master:
+    image: postgres:15
+    container_name: db-master
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: appdb_master
+    ports:
+      - "5432:5432"
+
+  db-slave:
+    image: postgres:15
+    container_name: db-slave
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: appdb_slave
+    ports:
+      - "5433:5432"
+
+  core:
+    build: .
+    container_name: app-core
+    ports:
+      - "3001:3000"
+    depends_on:
+      - db-master
+      - db-slave
+    environment:
+      DB_MASTER_HOST: db-master
+      DB_SLAVE_HOST: db-slave
+      DB_MASTER_PORT: 5432
+      DB_SLAVE_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: password
+      DB_MASTER_NAME: appdb_master
+      DB_SLAVE_NAME: appdb_slave
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: yarn workspace @app/core start
+
+  api:
+    build: .
+    container_name: app-api
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: yarn workspace @app/api dev
